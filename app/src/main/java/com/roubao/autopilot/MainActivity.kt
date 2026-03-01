@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var deviceController: DeviceController
     private lateinit var settingsManager: SettingsManager
     private lateinit var executionRepository: ExecutionRepository
+    private lateinit var userManager: UserManager
 
     private val mobileAgent = mutableStateOf<MobileAgent?>(null)
     private var shizukuAvailable = mutableStateOf(false)
@@ -113,6 +114,7 @@ class MainActivity : ComponentActivity() {
         deviceController.setCacheDir(cacheDir)
         settingsManager = SettingsManager(this)
         executionRepository = ExecutionRepository(this)
+        userManager = UserManager.getInstance(this)
 
         // 加载执行记录
         lifecycleScope.launch {
@@ -155,7 +157,18 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 } else {
-                    MainApp()
+                    // 检查用户登录状态
+                    val isLoggedIn by userManager.isLoggedIn.collectAsState()
+                    if (isLoggedIn) {
+                        MainApp()
+                    } else {
+                        LoginScreen(
+                            onLoginSuccess = {
+                                // 登录成功后刷新UI
+                            },
+                            userManager = userManager
+                        )
+                    }
                 }
             }
         }
@@ -268,6 +281,7 @@ class MainActivity : ComponentActivity() {
                                     checkAndUpdateShizukuStatus()
                                 }
                                 HomeScreen(
+                                    settings = settings,
                                     agentState = agentState,
                                     logs = logs,
                                     onExecute = { instruction ->
@@ -288,7 +302,11 @@ class MainActivity : ComponentActivity() {
                                     currentModel = settings.model,
                                     onRefreshShizuku = { refreshShizukuStatus() },
                                     onShizukuRequired = { showShizukuHelpDialog = true },
-                                    isExecuting = executing
+                                    isExecuting = executing,
+                                    userManager = userManager,
+                                    onLogout = {
+                                        // 登出后回到登录界面
+                                    }
                                 )
                             }
                             Screen.Capabilities -> CapabilitiesScreen()
@@ -331,6 +349,8 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             )
+
+                            else -> {}
                         }
                     }
                 }

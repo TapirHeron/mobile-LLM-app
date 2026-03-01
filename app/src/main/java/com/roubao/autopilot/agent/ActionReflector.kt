@@ -1,5 +1,8 @@
 package com.roubao.autopilot.agent
 
+import com.roubao.autopilot.App
+import com.roubao.autopilot.data.UserManager
+
 /**
  * ActionReflector Agent - 反思动作是否成功
  */
@@ -10,7 +13,7 @@ class ActionReflector {
      */
     fun getPrompt(infoPool: InfoPool): String = buildString {
         append("You are an agent verifying whether the last action produced the expected behavior.\n\n")
-
+        append(UserManager.getInstance(App.getInstance()).getCurrentUserSystemPrompt())
         append("### User Request ###\n")
         append("${infoPool.instruction}\n\n")
 

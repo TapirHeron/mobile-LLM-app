@@ -3,22 +3,39 @@ package com.roubao.autopilot.ui.screens
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,9 +47,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.roubao.autopilot.App
 import com.roubao.autopilot.agent.AgentState
+import com.roubao.autopilot.data.AppSettings
+import com.roubao.autopilot.data.SettingsManager
+import com.roubao.autopilot.data.UserManager
+import com.roubao.autopilot.data.UserInfo
+import com.roubao.autopilot.data.UserRole
 import com.roubao.autopilot.ui.theme.BaoziTheme
 import com.roubao.autopilot.ui.theme.Primary
 import com.roubao.autopilot.ui.theme.Secondary
@@ -66,7 +90,10 @@ fun HomeScreen(
     currentModel: String = "",
     onRefreshShizuku: () -> Unit = {},
     onShizukuRequired: () -> Unit = {},
-    isExecuting: Boolean = false
+    isExecuting: Boolean = false,
+    userManager: UserManager,
+    onLogout: () -> Unit = {},
+    settings: AppSettings
 ) {
     val colors = BaoziTheme.colors
     var inputText by remember { mutableStateOf("") }
@@ -101,46 +128,70 @@ fun HomeScreen(
             .background(colors.background)
             .imePadding()
     ) {
-        // 顶部标题
+        // 顶部标题和用户信息
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "肉包",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colors.primary
-                    )
-                    Text(
-                        text = if (shizukuAvailable) "准备就绪，告诉我你想做什么" else "请先连接 Shizuku",
-                        fontSize = 14.sp,
-                        color = if (shizukuAvailable) colors.textSecondary else colors.error
-                    )
-                }
-
-                // 未连接时显示刷新按钮
-                if (!shizukuAvailable) {
-                    IconButton(
-                        onClick = onRefreshShizuku,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(colors.backgroundCard)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "刷新 Shizuku 状态",
-                            tint = colors.primary
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "肉包",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.primary
+                        )
+                        
+                        // 显示当前用户信息
+                        userManager.currentUser.collectAsState().value?.let { user ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 4.dp)
+                            ) {
+                                Text(
+                                    text = "欢迎，${user.username}",
+                                    fontSize = 14.sp,
+                                    color = colors.textSecondary
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(colors.success)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = user.role.displayName,
+                                    fontSize = 12.sp,
+                                    color = colors.primary,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    }
+                    
+                    // 用户操作菜单
+                    userManager.currentUser.collectAsState().value?.let { user ->
+                        UserMenu(
+                            user = user,
+                            userManager = userManager,
+                            onLogout = onLogout,
+                            settings = settings
                         )
                     }
                 }
+                
+                Text(
+                    text = if (shizukuAvailable) "准备就绪，告诉我你想做什么" else "请先连接 Shizuku",
+                    fontSize = 14.sp,
+                    color = if (shizukuAvailable) colors.textSecondary else colors.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         }
 
@@ -554,4 +605,228 @@ fun InputArea(
             }
         }
     }
+}
+
+@Composable
+fun UserMenu(
+    user: UserInfo,
+    userManager: UserManager,
+    onLogout: () -> Unit,
+    settings: AppSettings,
+) {
+    val colors = BaoziTheme.colors
+    var expanded by remember { mutableStateOf(false) }
+    var showRoleDialog by remember { mutableStateOf(false) }
+    
+    Box {
+        IconButton(
+            onClick = { expanded = true },
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(colors.backgroundCard)
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "用户菜单",
+                tint = colors.primary,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(colors.backgroundCard)
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            tint = colors.textSecondary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("${user.username} (${user.role.displayName})")
+                    }
+                },
+                onClick = { expanded = false }
+            )
+            
+            Divider(color = colors.surfaceVariant)
+            
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Autorenew,
+                            contentDescription = null,
+                            tint = colors.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("切换角色")
+                    }
+                },
+                onClick = {
+                    expanded = false
+                    showRoleDialog = true
+                }
+            )
+            
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null,
+                            tint = colors.textSecondary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = if (settings.currentConfig.apiKey.isNotEmpty()) "API密钥: ${settings.currentConfig.apiKey.take(8)}..." else "设置API密钥",
+                            maxLines = 1
+                        )
+                    }
+                },
+                onClick = {
+                    expanded = false
+
+                }
+            )
+            
+            Divider(color = colors.surfaceVariant)
+            
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.PowerSettingsNew,
+                            contentDescription = null,
+                            tint = colors.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("退出登录", color = colors.error)
+                    }
+                },
+                onClick = {
+                    expanded = false
+                    userManager.logout()
+                    onLogout()
+                }
+            )
+
+        }
+    }
+    
+    // 角色选择对话框
+    if (showRoleDialog) {
+        RoleSelectionDialog(
+            currentUserRole = user.role,
+            onRoleSelected = { newRole ->
+                userManager.updateUserRole(newRole)
+                showRoleDialog = false
+            },
+            onDismiss = { showRoleDialog = false }
+        )
+    }
+}
+
+@Composable
+fun RoleSelectionDialog(
+    currentUserRole: UserRole,
+    onRoleSelected: (UserRole) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val colors = BaoziTheme.colors
+    var selectedRole by remember { mutableStateOf(currentUserRole) }
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "选择您的角色",
+                color = colors.textPrimary
+            )
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "不同的角色会影响AI助手的交互方式和提示词风格",
+                    color = colors.textSecondary,
+                    fontSize = 14.sp
+                )
+                
+                UserRole.entries.forEach { role ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { selectedRole = role },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (role == selectedRole) {
+                                colors.primary.copy(alpha = 0.1f)
+                            } else {
+                                colors.backgroundInput
+                            }
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (role == selectedRole),
+                                onClick = { selectedRole = role },
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = colors.primary
+                                )
+                            )
+                            
+                            Spacer(modifier = Modifier.width(12.dp))
+                            
+                            Column {
+                                Text(
+                                    text = role.displayName,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colors.textPrimary
+                                )
+                                
+                                Text(
+                                    text = role.description,
+                                    fontSize = 12.sp,
+                                    color = colors.textSecondary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onRoleSelected(selectedRole)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colors.primary
+                )
+            ) {
+                Text("确认")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("取消")
+            }
+        }
+    )
 }
