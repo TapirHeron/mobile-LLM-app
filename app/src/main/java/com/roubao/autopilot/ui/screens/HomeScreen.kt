@@ -11,6 +11,10 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +53,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.layout.WindowInsets
@@ -64,6 +69,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -154,8 +160,13 @@ fun HomeScreen(
     
     // 语音识别相关状态和函数
     val speechRecognizer = rememberSpeechRecognizer()
-    var speechRecognitionState by remember { mutableStateOf(speechState) }
+    var speechRecognitionState by remember { mutableStateOf<SpeechRecognitionState>(SpeechRecognitionState.Idle) }
     var triggerSpeechRecognition by remember { mutableStateOf(false) }
+    
+    // 微信式语音输入状态
+    var isRecording by remember { mutableStateOf(false) }
+    var shouldCancelSend by remember { mutableStateOf(false) }  // 上滑取消标志
+    var currentVolume by remember { mutableStateOf(0f) }  // 当前音量
     
     // 权限检查和请求
     fun checkAudioPermission(context: android.content.Context): Boolean {
@@ -175,7 +186,68 @@ fun HomeScreen(
     
     // 语音识别处理函数
     fun startSpeechRecognition() {
+        if (speechRecognitionState is SpeechRecognitionState.Listening) {
+            // 如果正在监听，则停止
+            println("[语音识别] ⏹️ 用户手动停止")
+            speechRecognizer.stopListening()
+            speechRecognitionState = SpeechRecognitionState.Idle
+        } else {
+            // 否则开始监听
+            triggerSpeechRecognition = true
+        }
+    }
+    
+    // 停止语音识别（供外部调用）
+    fun stopSpeechRecognition() {
+        println("[语音识别] ⏹️ 调用 stopSpeechRecognition")
+        speechRecognizer.stopListening()
+        speechRecognitionState = SpeechRecognitionState.Idle
+    }
+    
+    // 开始录音（微信模式 - 长按开始）
+    fun startRecording() {
+        println("[语音识别] 🎤 开始录音...")
+        isRecording = true
+        shouldCancelSend = false
+        speechRecognitionState = SpeechRecognitionState.Listening
+        
+        // 设置监听器
+        speechRecognizer.setOnReadyForSpeechListener {
+            println("[语音识别] ✅ 已准备好录音")
+        }
+        
+        speechRecognizer.setOnVolumeChangedListener { volume ->
+            currentVolume = volume
+            // println("[语音识别] 音量：$volume")
+        }
+        
+        speechRecognizer.setOnEndOfSpeechListener {
+            println("[语音识别] 📝 说话结束")
+        }
+        
+        // 启动识别
         triggerSpeechRecognition = true
+    }
+    
+    // 结束录音并发送（微信模式 - 松开或上滑）
+    fun endRecording(send: Boolean) {
+        println("[语音识别] ⏹️ 结束录音，send=$send, shouldCancelSend=$shouldCancelSend")
+        isRecording = false
+        
+        if (shouldCancelSend || !send) {
+            // 取消发送
+            println("[语音识别] ❌ 取消发送")
+            speechRecognizer.cancelListening()
+            speechRecognitionState = SpeechRecognitionState.Idle
+            Toast.makeText(context, "已取消发送", Toast.LENGTH_SHORT).show()
+        } else {
+            // 正常停止识别，但不立即调用 stopListening()
+            // 让 LaunchedEffect 中的 startListening() 自然完成
+            println("[语音识别] ✅ 等待识别完成...")
+            // 状态会在识别完成后由 LaunchedEffect 更新
+        }
+        
+        currentVolume = 0f
     }
     
     // 监听语音识别触发
@@ -209,27 +281,50 @@ fun HomeScreen(
             speechRecognitionState = SpeechRecognitionState.Listening
             onSpeechStart()
             
+            println("[语音识别] 🎤 开始启动...")
             try {
                 val result = speechRecognizer.startListening()
+                println("[语音识别] 识别结果：'$result'")
+                
+                // 无论是否有结果，都重置录音状态
+                isRecording = false
+                
                 if (result.isNotBlank()) {
                     speechRecognitionState = SpeechRecognitionState.Success(result)
                     onSpeechResult(result)
                     // 自动将识别结果填入输入框
                     inputText = result
+                    println("[语音识别] ✅ 成功识别")
+                    Toast.makeText(context, "识别成功：$result", Toast.LENGTH_SHORT).show()
                 } else {
-                    speechRecognitionState = SpeechRecognitionState.Error("未识别到语音")
-                    onSpeechError("未识别到语音")
+                    // 用户可能取消了识别或没有说话，重置为空闲状态
+                    speechRecognitionState = SpeechRecognitionState.Idle
+                    println("[语音识别] ⚠️ 未检测到语音")
+                    Toast.makeText(context, "未检测到语音", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
+                isRecording = false
+                println("[语音识别] ❌ 异常：${e.message}")
+                e.printStackTrace()
                 speechRecognitionState = SpeechRecognitionState.Error(e.message ?: "语音识别失败")
                 onSpeechError(e.message ?: "语音识别失败")
+                Toast.makeText(context, "语音识别失败：${e.message}", Toast.LENGTH_SHORT).show()
             }
+            // 注意：不在这里调用 destroy()，只在组件销毁时调用
         }
     }
     
     // 重置语音状态
     fun resetSpeechState() {
         speechRecognitionState = SpeechRecognitionState.Idle
+    }
+
+    // 在 Composable 销毁时清理语音识别资源
+    DisposableEffect(Unit) {
+        onDispose {
+            println("[语音识别] 🧹 HomeScreen 销毁，清理语音识别资源")
+            speechRecognizer.destroy()
+        }
     }
 
     // 记录上一次的运行状态，用于检测任务结束
@@ -383,9 +478,14 @@ fun HomeScreen(
             speechRecognitionState = speechRecognitionState,
             onStartSpeech = { startSpeechRecognition() },
             onStopSpeech = { 
-                // 停止语音识别的操作已经在 startSpeechRecognition 中处理
-                // 这里只需要调用回调即可
-            }
+                // 调用停止函数
+                stopSpeechRecognition()
+            },
+            // 微信模式长按说话参数
+            isRecording = isRecording,
+            onStartRecording = { startRecording() },
+            onEndRecording = { send -> endRecording(send) },
+            currentVolume = currentVolume
         )
     }
 }
@@ -617,6 +717,7 @@ fun LogItem(log: String) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun InputArea(
     inputText: String,
@@ -629,7 +730,12 @@ fun InputArea(
     // 语音识别相关参数
     speechRecognitionState: SpeechRecognitionState = SpeechRecognitionState.Idle,
     onStartSpeech: () -> Unit = {},
-    onStopSpeech: () -> Unit = {}
+    onStopSpeech: () -> Unit = {},
+    // 微信模式长按说话
+    isRecording: Boolean = false,
+    onStartRecording: () -> Unit = {},
+    onEndRecording: (Boolean) -> Unit = {},
+    currentVolume: Float = 0f
 ) {
     val colors = BaoziTheme.colors
     Surface(
@@ -725,47 +831,7 @@ fun InputArea(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // 语音输入按钮
-                IconButton(
-                    onClick = {
-                        if (speechRecognitionState is SpeechRecognitionState.Listening) {
-                            onStopSpeech()
-                        } else {
-                            onStartSpeech()
-                        }
-                    },
-                    enabled = enabled,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(
-                            when (speechRecognitionState) {
-                                is SpeechRecognitionState.Listening -> colors.error
-                                is SpeechRecognitionState.Processing -> colors.warning
-                                else -> colors.backgroundInput
-                            }
-                        )
-                ) {
-                    Icon(
-                        imageVector = when (speechRecognitionState) {
-                            is SpeechRecognitionState.Listening -> Icons.Default.MicOff
-                            else -> Icons.Default.Mic
-                        },
-                        contentDescription = when (speechRecognitionState) {
-                            is SpeechRecognitionState.Listening -> "停止语音识别"
-                            else -> "语音输入"
-                        },
-                        tint = when (speechRecognitionState) {
-                            is SpeechRecognitionState.Listening -> Color.White
-                            is SpeechRecognitionState.Processing -> Color.White
-                            else -> colors.textPrimary
-                        },
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-                
-                Spacer(modifier = Modifier.width(8.dp))
-                
+
                 // 发送按钮
                 IconButton(
                     onClick = onExecute,

@@ -45,6 +45,11 @@ class SpeechRecognizerHelper(private val context: Context) {
     private var audioFocusRequest: AudioFocusRequest? = null
     private var audioFocusGranted = false
     
+    // 音量监听
+    private var onVolumeChanged: ((Float) -> Unit)? = null
+    private var onReadyForSpeech: (() -> Unit)? = null
+    private var onEndOfSpeech: (() -> Unit)? = null
+    
     /**
      * 请求音频焦点
      */
@@ -82,10 +87,22 @@ class SpeechRecognizerHelper(private val context: Context) {
     private fun abandonAudioFocus() {
         if (audioFocusGranted) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
+                audioFocusRequest?.let { 
+                    try {
+                        audioManager.abandonAudioFocusRequest(it)
+                        println("[SpeechRecognizer] ✅ 已释放音频焦点 (API >= O)")
+                    } catch (e: Exception) {
+                        Log.e("SpeechRecognizer", "释放音频焦点失败：${e.message}")
+                    }
+                }
             } else {
                 @Suppress("DEPRECATION")
-                audioManager.abandonAudioFocus { /* 不需要处理 */ }
+                try {
+                    audioManager.abandonAudioFocus(null)
+                    println("[SpeechRecognizer] ✅ 已释放音频焦点 (API < O)")
+                } catch (e: Exception) {
+                    Log.e("SpeechRecognizer", "释放音频焦点失败：${e.message}")
+                }
             }
             audioFocusGranted = false
         }
@@ -105,13 +122,21 @@ class SpeechRecognizerHelper(private val context: Context) {
      */
     suspend fun startListening(): String = suspendCancellableCoroutine { continuation ->
         if (!hasAudioPermission()) {
+            println("[语音识别] ❌ 没有录音权限")
             continuation.resume("")
             return@suspendCancellableCoroutine
         }
         
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
+            println("[语音识别] ❌ 设备不支持语音识别")
             continuation.resume("")
             return@suspendCancellableCoroutine
+        }
+        
+        // 如果已有正在进行的识别，先停止
+        if (isListening) {
+            println("[语音识别] ⚠️ 已有识别在进行，先停止")
+            stopListening()
         }
         
         // 请求音频焦点
@@ -120,28 +145,35 @@ class SpeechRecognizerHelper(private val context: Context) {
             // 即使无法获取音频焦点也继续尝试识别
         }
         
+        // 创建新的语音识别器
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
             setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {
                     Log.d("SpeechRecognizer", "准备就绪")
+                    println("[语音识别] 🎤 准备就绪，请开始说话...")
+                    onReadyForSpeech?.invoke()
                 }
-                
+                        
                 override fun onBeginningOfSpeech() {
                     Log.d("SpeechRecognizer", "开始说话")
+                    println("[语音识别] 🗣️ 检测到语音")
                 }
-                
+                        
                 override fun onRmsChanged(rmsdB: Float) {
-                    // 音量变化回调
+                    // 音量变化回调 - 用于显示录音波形
+                    onVolumeChanged?.invoke(rmsdB)
                 }
-                
+                        
                 override fun onBufferReceived(buffer: ByteArray?) {
                     // 缓冲数据接收
                 }
-                
+                        
                 override fun onEndOfSpeech() {
                     Log.d("SpeechRecognizer", "说话结束")
+                    println("[语音识别] ✅ 说话结束，处理中...")
+                    onEndOfSpeech?.invoke()
                 }
-                
+                        
                 override fun onError(error: Int) {
                     val errorMessage = when (error) {
                         SpeechRecognizer.ERROR_AUDIO -> "音频问题"
@@ -155,25 +187,32 @@ class SpeechRecognizerHelper(private val context: Context) {
                         SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "说话超时"
                         else -> "未知错误"
                     }
-                    Log.e("SpeechRecognizer", "识别错误: $errorMessage")
+                    Log.e("SpeechRecognizer", "识别错误：$errorMessage (code: $error)")
+                    println("[语音识别] ❌ 识别错误：$errorMessage")
                     isListening = false
                     abandonAudioFocus()
                     continuation.resume("")
                 }
-                
+                        
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     val recognizedText = matches?.firstOrNull() ?: ""
-                    Log.d("SpeechRecognizer", "识别结果: $recognizedText")
+                    Log.d("SpeechRecognizer", "识别结果：$recognizedText")
+                    println("[语音识别] ✅ 成功识别：'$recognizedText'")
                     isListening = false
                     abandonAudioFocus()
                     continuation.resume(recognizedText)
                 }
-                
+                        
                 override fun onPartialResults(partialResults: Bundle?) {
                     // 部分结果回调
+                    partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.let { 
+                        if (it.isNotEmpty()) {
+                            println("[语音识别] 📝 部分结果：'${it.firstOrNull()}'")
+                        }
+                    }
                 }
-                
+                        
                 override fun onEvent(eventType: Int, params: Bundle?) {
                     // 事件回调
                 }
@@ -206,6 +245,38 @@ class SpeechRecognizerHelper(private val context: Context) {
             isListening = false
         }
         abandonAudioFocus()
+    }
+    
+    /**
+     * 取消语音识别（不保存结果）
+     */
+    fun cancelListening() {
+        if (isListening) {
+            speechRecognizer?.cancel()
+            isListening = false
+        }
+        abandonAudioFocus()
+    }
+    
+    /**
+     * 设置音量变化监听
+     */
+    fun setOnVolumeChangedListener(listener: (Float) -> Unit) {
+        onVolumeChanged = listener
+    }
+    
+    /**
+     * 设置准备就绪监听
+     */
+    fun setOnReadyForSpeechListener(listener: () -> Unit) {
+        onReadyForSpeech = listener
+    }
+    
+    /**
+     * 设置说话结束监听
+     */
+    fun setOnEndOfSpeechListener(listener: () -> Unit) {
+        onEndOfSpeech = listener
     }
     
     /**

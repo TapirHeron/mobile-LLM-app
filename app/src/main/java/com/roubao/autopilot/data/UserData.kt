@@ -8,10 +8,10 @@ enum class UserRole(
     val displayName: String,
     val description: String
 ) {
-    STUDENT("学生", "Student - Adapts to student needs, helps with learning tasks, research, and educational activities with clear explanations"),
-    ELDERLY("老年人", "Elderly - Provides patient, detailed guidance with simple language and step-by-step instructions for technology tasks"),
-    PROFESSIONAL("社会人员", "Professional - Offers efficient, practical assistance for daily life tasks, work-related activities, and general inquiries"),
-    SENIOR("资深人士", "Senior Expert - Delivers concise, professional responses with advanced insights and minimal explanations for experienced users");
+    STUDENT("学生", "学生 - 适应学生需求，帮助完成学习任务、研究和教育活动，提供清晰的解释"),
+    ELDERLY("老年人", "老年人 - 提供耐心详细的指导，使用简单语言和逐步说明来教授技术操作"),
+    PROFESSIONAL("社会人员", "社会人员 - 提供高效实用的协助，处理日常生活任务、工作相关事务和一般咨询"),
+    SENIOR("资深人士", "资深专家 - 为经验丰富的用户提供简洁专业的回应，提供高级见解且最少解释");
 
     companion object {
         fun fromDisplayName(displayName: String): UserRole? {

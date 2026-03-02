@@ -257,7 +257,7 @@ class UserManager private constructor(context: Context) {
         return if (user != null) {
             RolePrompts.getSystemPrompt(user.role)
         } else {
-            RolePrompts.getSystemPrompt(UserRole.BEGINNER)
+            RolePrompts.getSystemPrompt(UserRole.STUDENT)
         }
     }
     
@@ -269,7 +269,7 @@ class UserManager private constructor(context: Context) {
         return if (user != null) {
             RolePrompts.getTemplate(user.role)
         } else {
-            RolePrompts.getTemplate(UserRole.BEGINNER)
+            RolePrompts.getTemplate(UserRole.STUDENT)
         }
     }
     

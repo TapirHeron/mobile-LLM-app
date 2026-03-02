@@ -172,7 +172,7 @@ fun LoginScreen(
                                         username = username,
                                         email = null, // 简化处理
                                         password = password,
-                                        role = UserRole.BEGINNER // 默认角色
+                                        role = UserRole.STUDENT // 默认角色
                                     )
                                     val result = userManager.register(registerRequest)
                                     authResult = result
@@ -327,7 +327,7 @@ private fun EmailInputField(onEmailChange: (String) -> Unit) {
 
 @Composable
 private fun RoleSelectionField() {
-    var selectedRole by remember { mutableStateOf(UserRole.BEGINNER) }
+    var selectedRole by remember { mutableStateOf(UserRole.STUDENT) }
     
     Column {
         Text(
