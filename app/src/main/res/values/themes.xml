@@ -12,6 +12,9 @@
 
         <!-- 窗口背景 -->
         <item name="android:windowBackground">@color/background_dark</item>
+        
+        <!-- 键盘弹出时调整窗口大小 -->
+        <item name="android:windowSoftInputMode">adjustResize</item>
 
         <!-- 主题色 -->
         <item name="android:colorPrimary">@color/primary</item>

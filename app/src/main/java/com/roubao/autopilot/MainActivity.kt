@@ -225,7 +225,9 @@ class MainActivity : ComponentActivity() {
         }
 
         Scaffold(
-            modifier = Modifier.background(colors.background),
+            modifier = Modifier
+                .background(colors.background)
+                .imePadding(),  // 让整个 Scaffold 响应键盘
             containerColor = colors.background,
             bottomBar = {
                 if (selectedRecord == null) {
@@ -319,6 +321,21 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onNavigateToSettings = { 
                                         currentScreen = Screen.Settings 
+                                    },
+                                    // 语音识别回调
+                                    onSpeechStart = {
+                                        // 语音识别开始
+                                        println("语音识别开始")
+                                    },
+                                    onSpeechResult = { text ->
+                                        // 语音识别成功，将结果填入输入框并自动执行
+                                        println("语音识别结果: $text")
+                                        Toast.makeText(this@MainActivity, "识别结果: $text", Toast.LENGTH_SHORT).show()
+                                    },
+                                    onSpeechError = { error ->
+                                        // 语音识别错误
+                                        println("语音识别错误: $error")
+                                        Toast.makeText(this@MainActivity, "语音识别失败: $error", Toast.LENGTH_SHORT).show()
                                     }
                                 )
                             }

@@ -1,11 +1,30 @@
 package com.roubao.autopilot.ui.screens
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,16 +32,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Autorenew
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PowerSettingsNew
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,14 +48,26 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -50,16 +75,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.roubao.autopilot.App
 import com.roubao.autopilot.agent.AgentState
 import com.roubao.autopilot.data.AppSettings
-import com.roubao.autopilot.data.SettingsManager
 import com.roubao.autopilot.data.UserManager
-import com.roubao.autopilot.data.UserInfo
 import com.roubao.autopilot.data.UserRole
 import com.roubao.autopilot.ui.theme.BaoziTheme
 import com.roubao.autopilot.ui.theme.Primary
 import com.roubao.autopilot.ui.theme.Secondary
+import com.roubao.autopilot.utils.SpeechRecognitionState
+import com.roubao.autopilot.utils.rememberSpeechRecognizer
 
 /**
  * 预设命令
@@ -79,7 +108,7 @@ val presetCommands = listOf(
     PresetCommand("🛒", "点外卖", "帮我在美团点一份猪脚饭")
 )
 
-@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     agentState: AgentState?,
@@ -94,7 +123,12 @@ fun HomeScreen(
     userManager: UserManager,
     onLogout: () -> Unit = {},
     settings: AppSettings,
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    // 语音识别相关参数
+    speechState: SpeechRecognitionState = SpeechRecognitionState.Idle,
+    onSpeechStart: () -> Unit = {},
+    onSpeechResult: (String) -> Unit = {},
+    onSpeechError: (String) -> Unit = {}
 ) {
     val colors = BaoziTheme.colors
     var inputText by remember { mutableStateOf("") }
@@ -103,6 +137,100 @@ fun HomeScreen(
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    
+    // 检测键盘是否可见
+    val imeVisible = WindowInsets.isImeVisible
+    
+    // 当键盘弹出时，自动清除焦点
+    LaunchedEffect(imeVisible) {
+        if (imeVisible) {
+            // 键盘弹出，可以做一些处理
+        } else {
+            // 键盘收起，清除焦点
+            focusManager.clearFocus()
+        }
+    }
+    
+    // 语音识别相关状态和函数
+    val speechRecognizer = rememberSpeechRecognizer()
+    var speechRecognitionState by remember { mutableStateOf(speechState) }
+    var triggerSpeechRecognition by remember { mutableStateOf(false) }
+    
+    // 权限检查和请求
+    fun checkAudioPermission(context: android.content.Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+    
+    fun requestAudioPermission(context: android.content.Context) {
+        ActivityCompat.requestPermissions(
+            context as android.app.Activity,
+            arrayOf(Manifest.permission.RECORD_AUDIO),
+            1001
+        )
+    }
+    
+    // 语音识别处理函数
+    fun startSpeechRecognition() {
+        triggerSpeechRecognition = true
+    }
+    
+    // 监听语音识别触发
+    LaunchedEffect(triggerSpeechRecognition) {
+        if (triggerSpeechRecognition) {
+            triggerSpeechRecognition = false
+            
+            if (!checkAudioPermission(context)) {
+                requestAudioPermission(context)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        "请授予录音权限以使用语音输入功能",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                return@LaunchedEffect
+            }
+            
+            if (!speechRecognizer.hasAudioPermission()) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        "缺少录音权限，请在设置中开启",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                return@LaunchedEffect
+            }
+            
+            speechRecognitionState = SpeechRecognitionState.Listening
+            onSpeechStart()
+            
+            try {
+                val result = speechRecognizer.startListening()
+                if (result.isNotBlank()) {
+                    speechRecognitionState = SpeechRecognitionState.Success(result)
+                    onSpeechResult(result)
+                    // 自动将识别结果填入输入框
+                    inputText = result
+                } else {
+                    speechRecognitionState = SpeechRecognitionState.Error("未识别到语音")
+                    onSpeechError("未识别到语音")
+                }
+            } catch (e: Exception) {
+                speechRecognitionState = SpeechRecognitionState.Error(e.message ?: "语音识别失败")
+                onSpeechError(e.message ?: "语音识别失败")
+            }
+        }
+    }
+    
+    // 重置语音状态
+    fun resetSpeechState() {
+        speechRecognitionState = SpeechRecognitionState.Idle
+    }
 
     // 记录上一次的运行状态，用于检测任务结束
     var wasRunning by remember { mutableStateOf(false) }
@@ -127,7 +255,6 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
-            .imePadding()
     ) {
         // 顶部标题和用户信息
         Box(
@@ -251,6 +378,13 @@ fun HomeScreen(
                 if (!shizukuAvailable) {
                     onShizukuRequired()
                 }
+            },
+            // 语音识别相关参数
+            speechRecognitionState = speechRecognitionState,
+            onStartSpeech = { startSpeechRecognition() },
+            onStopSpeech = { 
+                // 停止语音识别的操作已经在 startSpeechRecognition 中处理
+                // 这里只需要调用回调即可
             }
         )
     }
@@ -445,12 +579,13 @@ fun ExecutingIndicator(currentStep: Int, currentModel: String = "") {
                         .fillMaxWidth()
                         .height(4.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(colors.backgroundInput)
+                        .background(colors.surfaceVariant)
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(animatedProgress)
                             .fillMaxHeight()
+                            .fillMaxWidth(animatedProgress)
+                            .clip(RoundedCornerShape(2.dp))
                             .background(
                                 Brush.horizontalGradient(
                                     listOf(Primary, Secondary)
@@ -466,21 +601,20 @@ fun ExecutingIndicator(currentStep: Int, currentModel: String = "") {
 @Composable
 fun LogItem(log: String) {
     val colors = BaoziTheme.colors
-    val logColor = when {
-        log.contains("❌") -> colors.error
-        log.contains("✅") -> colors.success
-        log.contains("📋") || log.contains("🎬") -> colors.secondary
-        log.contains("Step") || log.contains("=====") -> colors.primary
-        log.contains("⛔") -> colors.error
-        else -> colors.textSecondary
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.backgroundCard
+        )
+    ) {
+        Text(
+            text = log,
+            fontSize = 12.sp,
+            color = colors.textSecondary,
+            modifier = Modifier.padding(12.dp)
+        )
     }
-
-    Text(
-        text = log,
-        fontSize = 12.sp,
-        color = logColor,
-        modifier = Modifier.padding(vertical = 2.dp)
-    )
 }
 
 @Composable
@@ -491,18 +625,24 @@ fun InputArea(
     onStop: () -> Unit,
     isRunning: Boolean,
     enabled: Boolean,
-    onInputClick: () -> Unit = {}
+    onInputClick: () -> Unit = {},
+    // 语音识别相关参数
+    speechRecognitionState: SpeechRecognitionState = SpeechRecognitionState.Idle,
+    onStartSpeech: () -> Unit = {},
+    onStopSpeech: () -> Unit = {}
 ) {
     val colors = BaoziTheme.colors
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(72.dp),
         color = colors.backgroundCard,
-        shadowElevation = 8.dp
+        shadowElevation = 0.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 0.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = if (isRunning) Arrangement.Center else Arrangement.Start
         ) {
@@ -585,6 +725,47 @@ fun InputArea(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
+                // 语音输入按钮
+                IconButton(
+                    onClick = {
+                        if (speechRecognitionState is SpeechRecognitionState.Listening) {
+                            onStopSpeech()
+                        } else {
+                            onStartSpeech()
+                        }
+                    },
+                    enabled = enabled,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(
+                            when (speechRecognitionState) {
+                                is SpeechRecognitionState.Listening -> colors.error
+                                is SpeechRecognitionState.Processing -> colors.warning
+                                else -> colors.backgroundInput
+                            }
+                        )
+                ) {
+                    Icon(
+                        imageVector = when (speechRecognitionState) {
+                            is SpeechRecognitionState.Listening -> Icons.Default.MicOff
+                            else -> Icons.Default.Mic
+                        },
+                        contentDescription = when (speechRecognitionState) {
+                            is SpeechRecognitionState.Listening -> "停止语音识别"
+                            else -> "语音输入"
+                        },
+                        tint = when (speechRecognitionState) {
+                            is SpeechRecognitionState.Listening -> Color.White
+                            is SpeechRecognitionState.Processing -> Color.White
+                            else -> colors.textPrimary
+                        },
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
                 // 发送按钮
                 IconButton(
                     onClick = onExecute,
@@ -641,14 +822,11 @@ fun RoleSelectionDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { selectedRole = role },
+                        shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = if (role == selectedRole) {
-                                colors.primary.copy(alpha = 0.1f)
-                            } else {
-                                colors.backgroundInput
-                            }
-                        ),
-                        shape = RoundedCornerShape(12.dp)
+                            containerColor = if (selectedRole == role) colors.primary.copy(alpha = 0.1f) 
+                                           else colors.backgroundCard
+                        )
                     ) {
                         Row(
                             modifier = Modifier
@@ -657,15 +835,13 @@ fun RoleSelectionDialog(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
-                                selected = (role == selectedRole),
+                                selected = selectedRole == role,
                                 onClick = { selectedRole = role },
                                 colors = RadioButtonDefaults.colors(
                                     selectedColor = colors.primary
                                 )
                             )
-                            
                             Spacer(modifier = Modifier.width(12.dp))
-                            
                             Column {
                                 Text(
                                     text = role.displayName,
@@ -673,7 +849,6 @@ fun RoleSelectionDialog(
                                     fontWeight = FontWeight.Medium,
                                     color = colors.textPrimary
                                 )
-                                
                                 Text(
                                     text = role.description,
                                     fontSize = 12.sp,
@@ -686,15 +861,13 @@ fun RoleSelectionDialog(
             }
         },
         confirmButton = {
-            Button(
+            TextButton(
                 onClick = {
                     onRoleSelected(selectedRole)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colors.primary
-                )
+                    onDismiss()
+                }
             ) {
-                Text("确认")
+                Text("确定")
             }
         },
         dismissButton = {
@@ -703,4 +876,23 @@ fun RoleSelectionDialog(
             }
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    BaoziTheme {
+        HomeScreen(
+            agentState = null,
+            logs = emptyList(),
+            onExecute = {},
+            onStop = {},
+            shizukuAvailable = true,
+            userManager = UserManager.getInstance(App.getInstance()),
+            settings = AppSettings(),
+            onSpeechStart = {},
+            onSpeechResult = {},
+            onSpeechError = {}
+        )
+    }
 }
