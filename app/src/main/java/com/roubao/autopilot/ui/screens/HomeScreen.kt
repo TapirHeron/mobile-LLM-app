@@ -93,7 +93,8 @@ fun HomeScreen(
     isExecuting: Boolean = false,
     userManager: UserManager,
     onLogout: () -> Unit = {},
-    settings: AppSettings
+    settings: AppSettings,
+    onNavigateToSettings: () -> Unit = {}
 ) {
     val colors = BaoziTheme.colors
     var inputText by remember { mutableStateOf("") }
@@ -177,11 +178,12 @@ fun HomeScreen(
                     
                     // 用户操作菜单
                     userManager.currentUser.collectAsState().value?.let { user ->
-                        UserMenu(
+                        EnhancedUserMenu(
                             user = user,
                             userManager = userManager,
                             onLogout = onLogout,
-                            settings = settings
+                            settings = settings,
+                            onNavigateToSettings = onNavigateToSettings
                         )
                     }
                 }
@@ -604,134 +606,6 @@ fun InputArea(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun UserMenu(
-    user: UserInfo,
-    userManager: UserManager,
-    onLogout: () -> Unit,
-    settings: AppSettings,
-) {
-    val colors = BaoziTheme.colors
-    var expanded by remember { mutableStateOf(false) }
-    var showRoleDialog by remember { mutableStateOf(false) }
-    
-    Box {
-        IconButton(
-            onClick = { expanded = true },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(colors.backgroundCard)
-        ) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "用户菜单",
-                tint = colors.primary,
-                modifier = Modifier.size(28.dp)
-            )
-        }
-        
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.background(colors.backgroundCard)
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            tint = colors.textSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text("${user.username} (${user.role.displayName})")
-                    }
-                },
-                onClick = { expanded = false }
-            )
-            
-            Divider(color = colors.surfaceVariant)
-            
-            DropdownMenuItem(
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Autorenew,
-                            contentDescription = null,
-                            tint = colors.primary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text("切换角色")
-                    }
-                },
-                onClick = {
-                    expanded = false
-                    showRoleDialog = true
-                }
-            )
-            
-            DropdownMenuItem(
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = null,
-                            tint = colors.textSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = if (settings.currentConfig.apiKey.isNotEmpty()) "API密钥: ${settings.currentConfig.apiKey.take(8)}..." else "设置API密钥",
-                            maxLines = 1
-                        )
-                    }
-                },
-                onClick = {
-                    expanded = false
-
-                }
-            )
-            
-            Divider(color = colors.surfaceVariant)
-            
-            DropdownMenuItem(
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.PowerSettingsNew,
-                            contentDescription = null,
-                            tint = colors.error,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text("退出登录", color = colors.error)
-                    }
-                },
-                onClick = {
-                    expanded = false
-                    userManager.logout()
-                    onLogout()
-                }
-            )
-
-        }
-    }
-    
-    // 角色选择对话框
-    if (showRoleDialog) {
-        RoleSelectionDialog(
-            currentUserRole = user.role,
-            onRoleSelected = { newRole ->
-                userManager.updateUserRole(newRole)
-                showRoleDialog = false
-            },
-            onDismiss = { showRoleDialog = false }
-        )
     }
 }
 

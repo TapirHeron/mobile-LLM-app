@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
 import android.util.Log
+import com.roubao.autopilot.utils.AvatarManager
 
 private const val TAG = "MainActivity"
 
@@ -115,6 +116,15 @@ class MainActivity : ComponentActivity() {
         settingsManager = SettingsManager(this)
         executionRepository = ExecutionRepository(this)
         userManager = UserManager.getInstance(this)
+        
+        // 初始化头像管理器并恢复上次的头像设置
+        val avatarManager = AvatarManager(this)
+        val savedAvatarPath = avatarManager.getCurrentAvatarPath()
+        if (savedAvatarPath != null) {
+            userManager.updateUserAvatar(savedAvatarPath)
+            Log.d(TAG, "Restored avatar from: $savedAvatarPath")
+        }
+
 
         // 加载执行记录
         lifecycleScope.launch {
@@ -306,6 +316,9 @@ class MainActivity : ComponentActivity() {
                                     userManager = userManager,
                                     onLogout = {
                                         // 登出后回到登录界面
+                                    },
+                                    onNavigateToSettings = { 
+                                        currentScreen = Screen.Settings 
                                     }
                                 )
                             }

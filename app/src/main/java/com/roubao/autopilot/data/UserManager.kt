@@ -196,6 +196,57 @@ class UserManager private constructor(context: Context) {
             false
         }
     }
+    
+    /**
+     * 更新用户头像路径
+     */
+    fun updateUserAvatar(avatarPath: String?): Boolean {
+        val currentUser = _currentUser.value ?: return false
+        
+        return try {
+            val updatedUser = currentUser.copy(avatarPath = avatarPath)
+            saveUserInfo(updatedUser)
+            setCurrentUser(updatedUser)
+            
+            // 同时保存到 SharedPreferences 用于快速访问
+            prefs.edit().putString("current_user_avatar", avatarPath).apply()
+            
+            Log.d("UserManager", "Avatar updated: $avatarPath")
+            true
+        } catch (e: Exception) {
+            Log.e("UserManager", "Failed to update user avatar", e)
+            false
+        }
+    }
+    
+    /**
+     * 获取当前用户头像路径
+     */
+    fun getCurrentUserAvatar(): String? {
+        return _currentUser.value?.avatarPath ?: prefs.getString("current_user_avatar", null)
+    }
+    
+    /**
+     * 清理用户头像
+     */
+    fun clearUserAvatar(): Boolean {
+        val currentUser = _currentUser.value ?: return false
+        
+        return try {
+            val updatedUser = currentUser.copy(avatarPath = null)
+            saveUserInfo(updatedUser)
+            setCurrentUser(updatedUser)
+            
+            // 清理 SharedPreferences 中的头像路径
+            prefs.edit().remove("current_user_avatar").apply()
+            
+            Log.d("UserManager", "Avatar cleared")
+            true
+        } catch (e: Exception) {
+            Log.e("UserManager", "Failed to clear user avatar", e)
+            false
+        }
+    }
 
     
     /**
@@ -272,14 +323,14 @@ class UserManager private constructor(context: Context) {
 
     private fun serializeUserInfo(userInfo: UserInfo): String {
         return "${userInfo.userId}|${userInfo.username}|${userInfo.email ?: ""}|${userInfo.role.name}|" +
-               "${userInfo.createdAt}|${userInfo.lastLoginAt}|${userInfo.isActive}|"+
+               "${userInfo.createdAt}|${userInfo.lastLoginAt}|${userInfo.isActive}|${userInfo.avatarPath ?: ""}|" +
                 userInfo.password
     }
     
     private fun deserializeUserInfo(data: String): UserInfo? {
         return try {
             val parts = data.split("|")
-            if (parts.size >= 8) {
+            if (parts.size >= 9) {
                 UserInfo(
                     userId = parts[0],
                     username = parts[1],
@@ -288,6 +339,20 @@ class UserManager private constructor(context: Context) {
                     createdAt = parts[4].toLong(),
                     lastLoginAt = parts[5].toLong(),
                     isActive = parts[6].toBoolean(),
+                    avatarPath = if (parts[7].isNotEmpty()) parts[7] else null,
+                    password = parts[8]
+                )
+            } else if (parts.size >= 8) {
+                // 兼容旧版本数据格式
+                UserInfo(
+                    userId = parts[0],
+                    username = parts[1],
+                    email = if (parts[2].isNotEmpty()) parts[2] else null,
+                    role = UserRole.valueOf(parts[3]),
+                    createdAt = parts[4].toLong(),
+                    lastLoginAt = parts[5].toLong(),
+                    isActive = parts[6].toBoolean(),
+                    avatarPath = null,
                     password = parts[7]
                 )
             } else {

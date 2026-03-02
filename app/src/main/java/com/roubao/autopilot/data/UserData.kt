@@ -30,6 +30,7 @@ data class UserInfo(
     val password: String,
     val email: String? = null,
     val role: UserRole = UserRole.BEGINNER,
+    val avatarPath: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val lastLoginAt: Long = System.currentTimeMillis(),
     val isActive: Boolean = true

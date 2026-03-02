@@ -87,6 +87,9 @@ dependencies {
 
     // JSON
     implementation("org.json:json:20231013")
+    
+    // Coil (图片加载)
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     // Firebase Crashlytics
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
