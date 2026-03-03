@@ -92,7 +92,7 @@ class App : Application() {
         }
 
         private val REQUEST_PERMISSION_RESULT_LISTENER =
-            Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+            Shizuku.OnRequestPermissionResultListener { _, grantResult ->
                 val granted = grantResult == PackageManager.PERMISSION_GRANTED
                 println("[Shizuku] Permission result: $granted")
             }
