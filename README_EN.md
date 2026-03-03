@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/images/logo.png" alt="Roubao - AI Android Automation Assistant" width="120" height="120">
+  <img src="docs/images/logo.png" alt="MindFlow - AI Android Automation Assistant" width="120" height="120">
 </p>
 
-<h1 align="center">Roubao (智随心动)</h1>
+<h1 align="center">MindFlow</h1>
 
 <p align="center">
   <strong>The First Open-Source AI Phone Automation Assistant Without PC</strong>
@@ -44,15 +44,15 @@ The first batch of 30,000 engineering units priced at 3,499 CNY (~$480) sold out
 
 **Can't buy one? Let's build our own.**
 
-And so Roubao was born - a fully open-source AI phone automation assistant.
+And so MindFlow was born - a fully open-source AI phone automation assistant.
 
-Why "Roubao" (智随心动, meaning "meat bun")? Because the author doesn't like vegetables. 🥟
+Why "MindFlow" (智随心动, meaning "meat bun")? Because the author doesn't like vegetables. 🥟
 
 ---
 
 ## Comparison
 
-| Feature | Roubao | Doubao Phone | Other Open Source |
+| Feature | MindFlow | Doubao Phone | Other Open Source |
 |---------|--------|--------------|-------------------|
 | Requires PC | ❌ No | ❌ No | ✅ Most do |
 | Requires Hardware | ❌ No | ✅ $480+ | ❌ No |
@@ -71,7 +71,7 @@ Why "Roubao" (智随心动, meaning "meat bun")? Because the author doesn't like
 - Can only operate from computer, phone must be connected via USB
 - High technical barrier, difficult for regular users
 
-**Roubao's Solution:**
+**MindFlow's Solution:**
 
 One app, install and use. No computer, no cables, no technical background required.
 
@@ -79,7 +79,7 @@ Open App → Configure API Key → Tell it what you want → Done.
 
 ---
 
-## Why Choose Roubao?
+## Why Choose MindFlow?
 
 ### Native Android Implementation, Not a Python Script Wrapper
 
@@ -88,7 +88,7 @@ Almost all phone automation open-source projects (including Alibaba's MobileAgen
 - Phone connected to computer via USB/WiFi ADB
 - Screenshots transferred to computer, processed, then commands sent back to phone
 
-**Roubao is completely different.**
+**MindFlow is completely different.**
 
 We **rewrote the entire MobileAgent framework in Kotlin**, running natively on Android:
 - Screenshot, analysis, and execution all happen locally on the phone
@@ -108,11 +108,11 @@ Traditional solutions require connecting to a computer for ADB commands. **Shizu
 2. After that, regular apps can gain ADB-level permissions
 3. **No Root required**, no need to connect to computer each time
 
-This allows Roubao to execute screenshots, taps, and input directly on the phone, truly achieving "one app does it all."
+This allows MindFlow to execute screenshots, taps, and input directly on the phone, truly achieving "one app does it all."
 
 ### Claude Code-Inspired Tools/Skills Architecture
 
-Inspired by [Claude Code](https://claude.ai/claude-code), Roubao implements a **Tools + Skills dual-layer Agent framework**:
+Inspired by [Claude Code](https://claude.ai/claude-code), MindFlow implements a **Tools + Skills dual-layer Agent framework**:
 
 ```
 User: "Order me some food"
@@ -194,7 +194,7 @@ User-facing task layer that maps natural language to specific operations:
 
 ### 🔓 Root Mode Support
 
-When Shizuku runs with Root privileges, Roubao can enable Root mode:
+When Shizuku runs with Root privileges, MindFlow can enable Root mode:
 
 - **Root Mode**: Unlock more system-level operation capabilities
 - **su Commands**: Allow execution of `su -c` commands (use with caution)
@@ -237,14 +237,14 @@ Shizuku is an open-source tool that allows regular apps to gain ADB-level permis
 1. Connect phone to computer, enable USB Debugging
 2. Run: `adb shell sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh`
 
-#### 2. Install Roubao
+#### 2. Install MindFlow
 
 Download the latest APK from [Releases](../../releases) page.
 
 #### 3. Authorization & Configuration
 
-1. Open Roubao app
-2. Authorize Roubao in Shizuku
+1. Open MindFlow app
+2. Authorize MindFlow in Shizuku
 3. **⚠️ Important: Go to Settings and configure your API Key**
 
 ### Getting an API Key
@@ -276,7 +276,7 @@ Watch trending videos on Bilibili
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                         Roubao App                            │
+│                         MindFlow App                            │
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │   ┌─────────────────────────────────────────────────────┐   │
@@ -357,7 +357,7 @@ User Input
 ### Project Structure
 
 ```
-app/src/main/java/com/roubao/autopilot/
+app/src/main/java/com/MindFlow/autopilot/
 ├── agent/                    # AI Agent Core (ported from MobileAgent-v3)
 │   ├── MobileAgent.kt        # Agent main loop
 │   ├── Manager.kt            # Planning Agent
@@ -416,7 +416,7 @@ app/src/main/assets/
 
 ### 🚀 v2.0 In Development
 
-> Major update in progress on `roubao2.0+AccessibilityService` branch
+> Major update in progress on `MindFlow2.0+AccessibilityService` branch
 
 - [ ] **Accessibility Service Hybrid Mode** - Integrate AccessibilityService for more precise UI control
   - Prioritize element index-based clicking (unaffected by screen changes)
@@ -469,8 +469,8 @@ app/src/main/assets/
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/roubao.git
-cd roubao
+git clone https://github.com/yourusername/MindFlow.git
+cd MindFlow
 
 # Build Debug version
 ./gradlew assembleDebug
@@ -487,7 +487,7 @@ Encountered a crash or bug? Here's how to report:
 
 ### Export Logs
 
-1. Open Roubao App → Settings
+1. Open MindFlow App → Settings
 2. Find "Feedback & Debug" section
 3. Tap "Export Logs"
 4. Choose a sharing method (Email, etc.) to send to developers
@@ -503,7 +503,7 @@ Encountered a crash or bug? Here's how to report:
 
 ### Submit an Issue
 
-Please submit issues on [GitHub Issues](https://github.com/Turbo1123/roubao/issues) with:
+Please submit issues on [GitHub Issues](https://github.com/Turbo1123/MindFlow/issues) with:
 - Problem description
 - Steps to reproduce
 - Exported log file
@@ -536,5 +536,5 @@ This project is open-sourced under the MIT License. See [LICENSE](LICENSE) file 
 ---
 
 <p align="center">
-  Made with ❤️ by Roubao Team
+  Made with ❤️ by MindFlow Team
 </p>
