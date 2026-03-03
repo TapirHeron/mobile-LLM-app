@@ -41,11 +41,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
 import android.util.Log
+import com.roubao.autopilot.utils.AvatarManager
 
 private const val TAG = "MainActivity"
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector, val selectedIcon: ImageVector) {
-    object Home : Screen("home", "肉包", Icons.Outlined.Home, Icons.Filled.Home)
+    object Home : Screen("home", "智随心动", Icons.Outlined.Home, Icons.Filled.Home)
     object Capabilities : Screen("capabilities", "能力", Icons.Outlined.Star, Icons.Filled.Star)
     object History : Screen("history", "记录", Icons.Outlined.List, Icons.Filled.List)
     object Settings : Screen("settings", "设置", Icons.Outlined.Settings, Icons.Filled.Settings)
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var deviceController: DeviceController
     private lateinit var settingsManager: SettingsManager
     private lateinit var executionRepository: ExecutionRepository
+    private lateinit var userManager: UserManager
 
     private val mobileAgent = mutableStateOf<MobileAgent?>(null)
     private var shizukuAvailable = mutableStateOf(false)
@@ -113,6 +115,16 @@ class MainActivity : ComponentActivity() {
         deviceController.setCacheDir(cacheDir)
         settingsManager = SettingsManager(this)
         executionRepository = ExecutionRepository(this)
+        userManager = UserManager.getInstance(this)
+        
+        // 初始化头像管理器并恢复上次的头像设置
+        val avatarManager = AvatarManager(this)
+        val savedAvatarPath = avatarManager.getCurrentAvatarPath()
+        if (savedAvatarPath != null) {
+            userManager.updateUserAvatar(savedAvatarPath)
+            Log.d(TAG, "Restored avatar from: $savedAvatarPath")
+        }
+
 
         // 加载执行记录
         lifecycleScope.launch {
@@ -155,7 +167,18 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 } else {
-                    MainApp()
+                    // 检查用户登录状态
+                    val isLoggedIn by userManager.isLoggedIn.collectAsState()
+                    if (isLoggedIn) {
+                        MainApp()
+                    } else {
+                        LoginScreen(
+                            onLoginSuccess = {
+                                // 登录成功后刷新UI
+                            },
+                            userManager = userManager
+                        )
+                    }
                 }
             }
         }
@@ -202,7 +225,9 @@ class MainActivity : ComponentActivity() {
         }
 
         Scaffold(
-            modifier = Modifier.background(colors.background),
+            modifier = Modifier
+                .background(colors.background)
+                .imePadding(),  // 让整个 Scaffold 响应键盘
             containerColor = colors.background,
             bottomBar = {
                 if (selectedRecord == null) {
@@ -268,6 +293,7 @@ class MainActivity : ComponentActivity() {
                                     checkAndUpdateShizukuStatus()
                                 }
                                 HomeScreen(
+                                    settings = settings,
                                     agentState = agentState,
                                     logs = logs,
                                     onExecute = { instruction ->
@@ -288,7 +314,29 @@ class MainActivity : ComponentActivity() {
                                     currentModel = settings.model,
                                     onRefreshShizuku = { refreshShizukuStatus() },
                                     onShizukuRequired = { showShizukuHelpDialog = true },
-                                    isExecuting = executing
+                                    isExecuting = executing,
+                                    userManager = userManager,
+                                    onLogout = {
+                                        // 登出后回到登录界面
+                                    },
+                                    onNavigateToSettings = { 
+                                        currentScreen = Screen.Settings 
+                                    },
+                                    // 语音识别回调
+                                    onSpeechStart = {
+                                        // 语音识别开始
+                                        println("语音识别开始")
+                                    },
+                                    onSpeechResult = { text ->
+                                        // 语音识别成功，将结果填入输入框并自动执行
+                                        println("语音识别结果: $text")
+                                        Toast.makeText(this@MainActivity, "识别结果: $text", Toast.LENGTH_SHORT).show()
+                                    },
+                                    onSpeechError = { error ->
+                                        // 语音识别错误
+                                        println("语音识别错误: $error")
+                                        Toast.makeText(this@MainActivity, "语音识别失败: $error", Toast.LENGTH_SHORT).show()
+                                    }
                                 )
                             }
                             Screen.Capabilities -> CapabilitiesScreen()
@@ -331,6 +379,8 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             )
+
+                            else -> {}
                         }
                     }
                 }

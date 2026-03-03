@@ -38,20 +38,20 @@ data class OnboardingPage(
 val onboardingPages = listOf(
     OnboardingPage(
         icon = Icons.Outlined.Star,
-        title = "欢迎使用肉包",
-        description = "肉包是一个智能自动化助手，\n可以帮你操作手机完成各种任务",
+        title = "欢迎使用智随心动",
+        description = "智随心动是一个智能自动化助手，\n可以帮你操作手机完成各种任务",
         iconColor = Color(0xFF6366F1) // Indigo
     ),
     OnboardingPage(
         icon = Icons.Outlined.Settings,
         title = "AI 驱动",
-        description = "基于先进的视觉语言模型，\n肉包能够理解屏幕内容并做出智能决策",
+        description = "基于先进的视觉语言模型，\n智随心动能够理解屏幕内容并做出智能决策",
         iconColor = Color(0xFF8B5CF6) // Violet
     ),
     OnboardingPage(
         icon = Icons.Outlined.Home,
         title = "简单易用",
-        description = "只需用自然语言描述你想做的事，\n肉包会自动帮你完成",
+        description = "只需用自然语言描述你想做的事，\n智随心动会自动帮你完成",
         iconColor = Color(0xFF06B6D4) // Cyan
     ),
     OnboardingPage(

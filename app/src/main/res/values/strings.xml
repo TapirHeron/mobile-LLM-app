@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
-    <string name="app_name">肉包</string>
+    <string name="app_name">智随心动</string>
 
     <!-- Tab Titles -->
-    <string name="tab_home">肉包</string>
+    <string name="tab_home">智随心动</string>
     <string name="tab_history">记录</string>
     <string name="tab_settings">设置</string>
 
@@ -12,7 +12,7 @@
     <string name="home_ready">准备就绪，告诉我你想做什么</string>
     <string name="home_connect_shizuku">请先连接 Shizuku</string>
     <string name="home_try_these">试试这些指令</string>
-    <string name="home_input_placeholder">告诉肉包你想做什么…</string>
+    <string name="home_input_placeholder">告诉智随心动你想做什么…</string>
     <string name="home_executing">正在执行 Step %1$d</string>
     <string name="home_send">发送</string>
     <string name="home_stop">停止</string>
@@ -107,29 +107,29 @@
     <string name="shizuku_help_step1_desc">从 Google Play 或 GitHub 下载 Shizuku 应用\n\n• Google Play: 搜索 \"Shizuku\"\n• GitHub: github.com/RikkaApps/Shizuku</string>
     <string name="shizuku_help_step2_title">启动 Shizuku</string>
     <string name="shizuku_help_step2_desc">打开 Shizuku 应用，根据您的设备选择启动方式：\n\n• 无线调试（推荐）：需要 Android 11+，在开发者选项中开启无线调试\n• 连接电脑：通过 ADB 命令启动</string>
-    <string name="shizuku_help_step3_title">授权肉包</string>
-    <string name="shizuku_help_step3_desc">在 Shizuku 的「应用管理」中找到肉包 Autopilot，点击授权按钮</string>
+    <string name="shizuku_help_step3_title">授权智随心动</string>
+    <string name="shizuku_help_step3_desc">在 Shizuku 的「应用管理」中找到智随心动 Autopilot，点击授权按钮</string>
     <string name="shizuku_help_step4_title">开始使用</string>
-    <string name="shizuku_help_step4_desc">授权完成后，返回肉包应用，状态卡片会显示「Shizuku 已连接」</string>
+    <string name="shizuku_help_step4_desc">授权完成后，返回智随心动应用，状态卡片会显示「Shizuku 已连接」</string>
 
     <!-- Overlay Help -->
     <string name="overlay_why">为什么需要悬浮窗权限？</string>
-    <string name="overlay_reason">肉包在执行任务时需要显示悬浮窗来：</string>
+    <string name="overlay_reason">智随心动在执行任务时需要显示悬浮窗来：</string>
     <string name="overlay_feature1">显示当前执行进度</string>
     <string name="overlay_feature2">提供停止按钮，随时中断任务</string>
     <string name="overlay_feature3">在其他应用上方显示状态信息</string>
     <string name="overlay_how">如何开启？</string>
-    <string name="overlay_how_desc">1. 点击执行任务时会自动提示\n2. 或前往：设置 > 应用 > 肉包 > 悬浮窗权限\n3. 开启「允许显示在其他应用上层」</string>
+    <string name="overlay_how_desc">1. 点击执行任务时会自动提示\n2. 或前往：设置 > 应用 > 智随心动 > 悬浮窗权限\n3. 开启「允许显示在其他应用上层」</string>
     <string name="overlay_privacy">隐私安全</string>
     <string name="overlay_privacy_desc">悬浮窗仅在任务执行期间显示，不会收集任何个人信息。任务完成后悬浮窗会自动消失。</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_welcome">欢迎使用肉包</string>
-    <string name="onboarding_welcome_desc">肉包是一个智能自动化助手，\n可以帮你操作手机完成各种任务</string>
+    <string name="onboarding_welcome">欢迎使用智随心动</string>
+    <string name="onboarding_welcome_desc">智随心动是一个智能自动化助手，\n可以帮你操作手机完成各种任务</string>
     <string name="onboarding_ai">AI 驱动</string>
-    <string name="onboarding_ai_desc">基于先进的视觉语言模型，\n肉包能够理解屏幕内容并做出智能决策</string>
+    <string name="onboarding_ai_desc">基于先进的视觉语言模型，\n智随心动能够理解屏幕内容并做出智能决策</string>
     <string name="onboarding_easy">简单易用</string>
-    <string name="onboarding_easy_desc">只需用自然语言描述你想做的事，\n肉包会自动帮你完成</string>
+    <string name="onboarding_easy_desc">只需用自然语言描述你想做的事，\n智随心动会自动帮你完成</string>
     <string name="onboarding_safe">安全可靠</string>
     <string name="onboarding_safe_desc">遇到敏感页面（如支付、密码）会自动停止，\n保护你的账户安全</string>
     <string name="onboarding_skip">跳过</string>

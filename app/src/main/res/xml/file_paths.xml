@@ -2,4 +2,13 @@
 <paths>
     <files-path name="crash_logs" path="crash_logs/" />
     <cache-path name="cache" path="/" />
+    
+    <!-- 外部文件目录 - 用于头像存储 -->
+    <external-files-path name="external_files" path="." />
+    
+    <!-- 外部缓存目录 - 用于临时文件 -->
+    <external-cache-path name="external_cache" path="." />
+    
+    <!-- 照片目录 - 用于相机拍照 -->
+    <external-path name="external_storage" path="." />
 </paths>
