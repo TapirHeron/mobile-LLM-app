@@ -210,7 +210,7 @@ fun AgentsListView() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "肉包采用多 Agent 协作架构，每个 Agent 专注于特定职责，通过协作完成复杂的手机自动化任务。",
+                        text = "智随心动采用多 Agent 协作架构，每个 Agent 专注于特定职责，通过协作完成复杂的手机自动化任务。",
                         fontSize = 13.sp,
                         color = colors.textSecondary
                     )

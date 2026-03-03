@@ -108,7 +108,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
                 val intent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_STREAM, uri)
-                    putExtra(Intent.EXTRA_SUBJECT, "肉包 App 日志")
+                    putExtra(Intent.EXTRA_SUBJECT, "智随心动 App 日志")
                     putExtra(Intent.EXTRA_TEXT, "请查看附件中的日志文件")
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }

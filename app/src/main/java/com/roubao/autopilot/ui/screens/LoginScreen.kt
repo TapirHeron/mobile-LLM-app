@@ -79,7 +79,7 @@ fun LoginScreen(
             )
             
             Text(
-                text = if (showRegister) "加入肉包AI助手社区" else "登录您的账户继续使用",
+                text = if (showRegister) "加入智随心动AI助手社区" else "登录您的账户继续使用",
                 fontSize = 16.sp,
                 color = BaoziTheme.colors.textSecondary,
                 modifier = Modifier.padding(top = 8.dp)
@@ -232,7 +232,7 @@ fun LoginScreen(
             
             // 底部信息
             Text(
-                text = "© 2024 肉包AI助手",
+                text = "© 2024 智随心动AI助手",
                 color = BaoziTheme.colors.textHint,
                 fontSize = 12.sp
             )

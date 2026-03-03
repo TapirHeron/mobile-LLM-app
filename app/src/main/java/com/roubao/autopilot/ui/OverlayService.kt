@@ -158,7 +158,7 @@ class OverlayService : Service() {
 
     private fun startForegroundNotification() {
         val channelId = "baozi_overlay"
-        val channelName = "肉包状态"
+        val channelName = "智随心动状态"
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -167,7 +167,7 @@ class OverlayService : Service() {
                     channelName,
                     NotificationManager.IMPORTANCE_LOW
                 ).apply {
-                    description = "显示肉包执行状态"
+                    description = "显示智随心动执行状态"
                     setShowBadge(false)
                 }
                 val notificationManager = getSystemService(NotificationManager::class.java)
@@ -182,9 +182,9 @@ class OverlayService : Service() {
             )
 
             val notification = NotificationCompat.Builder(this, channelId)
-                .setContentTitle("肉包运行中")
+                .setContentTitle("智随心动运行中")
                 .setContentText("正在执行自动化任务...")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher_old)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -196,8 +196,8 @@ class OverlayService : Service() {
             // 降级：使用最简单的通知确保 startForeground 被调用
             try {
                 val fallbackNotification = NotificationCompat.Builder(this, channelId)
-                    .setContentTitle("肉包")
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("智随心动")
+                    .setSmallIcon(R.mipmap.ic_launcher_old)
                     .build()
                 startForeground(1001, fallbackNotification)
             } catch (e2: Exception) {
@@ -238,7 +238,7 @@ class OverlayService : Service() {
 
         // 状态文字
         textView = TextView(this).apply {
-            text = "肉包"
+            text = "智随心动"
             textSize = 13f
             setTextColor(Color.WHITE)
             gravity = Gravity.CENTER

@@ -546,7 +546,7 @@ fun SettingsScreen(
         item {
             SettingsItem(
                 icon = Icons.Default.Build,
-                title = "肉包 Autopilot",
+                title = "智随心动 Autopilot",
                 subtitle = "基于视觉语言模型的 Android 自动化工具",
                 onClick = { }
             )
@@ -1340,14 +1340,14 @@ fun ShizukuHelpDialog(onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
                 HelpStep(
                     number = "3",
-                    title = "授权肉包",
-                    description = "在 Shizuku 的「应用管理」中找到「肉包」，点击授权按钮"
+                    title = "授权智随心动",
+                    description = "在 Shizuku 的「应用管理」中找到「智随心动」，点击授权按钮"
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 HelpStep(
                     number = "4",
                     title = "开始使用",
-                    description = "授权完成后，返回肉包应用，即可开始使用"
+                    description = "授权完成后，返回智随心动应用，即可开始使用"
                 )
             }
         },
@@ -1380,7 +1380,7 @@ fun OverlayHelpDialog(onDismiss: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "肉包在执行任务时需要显示悬浮窗来：",
+                    text = "智随心动在执行任务时需要显示悬浮窗来：",
                     fontSize = 14.sp,
                     color = colors.textPrimary
                 )
@@ -1398,7 +1398,7 @@ fun OverlayHelpDialog(onDismiss: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "1. 点击执行任务时会自动提示\n2. 或前往：设置 > 应用 > 肉包 > 悬浮窗权限\n3. 开启「允许显示在其他应用上层」",
+                    text = "1. 点击执行任务时会自动提示\n2. 或前往：设置 > 应用 > 智随心动 > 悬浮窗权限\n3. 开启「允许显示在其他应用上层」",
                     fontSize = 14.sp,
                     color = colors.textPrimary,
                     lineHeight = 22.sp

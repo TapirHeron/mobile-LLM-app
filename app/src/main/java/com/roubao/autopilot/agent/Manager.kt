@@ -38,7 +38,7 @@ class Manager {
         }
 
         append("### Guidelines ###\n")
-        append("1. IMPORTANT: If you see the \"肉包\" or \"Baozi\" app interface (this automation tool), press Home button first to go back to the home screen, then proceed with the task.\n")
+        append("1. IMPORTANT: If you see the \"智随心动\" or \"Baozi\" app interface (this automation tool), press Home button first to go back to the home screen, then proceed with the task.\n")
         append("2. ALWAYS use `open_app` action to open apps - NEVER go to home screen to look for app icons! The open_app action can launch any installed app directly.\n")
         append("3. Use search to quickly find a file or entry with a specific name.\n")
         append("4. If there are relevant skills listed above, follow their suggested steps for better efficiency.\n")

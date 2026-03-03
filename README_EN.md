@@ -2,7 +2,7 @@
   <img src="docs/images/logo.png" alt="Roubao - AI Android Automation Assistant" width="120" height="120">
 </p>
 
-<h1 align="center">Roubao (肉包)</h1>
+<h1 align="center">Roubao (智随心动)</h1>
 
 <p align="center">
   <strong>The First Open-Source AI Phone Automation Assistant Without PC</strong>
@@ -46,7 +46,7 @@ The first batch of 30,000 engineering units priced at 3,499 CNY (~$480) sold out
 
 And so Roubao was born - a fully open-source AI phone automation assistant.
 
-Why "Roubao" (肉包, meaning "meat bun")? Because the author doesn't like vegetables. 🥟
+Why "Roubao" (智随心动, meaning "meat bun")? Because the author doesn't like vegetables. 🥟
 
 ---
 

@@ -56,12 +56,12 @@ class MobileAgent(
     // Skill 管理器
     private val skillManager: SkillManager? = try {
         SkillManager.getInstance().also {
-            println("[肉包] SkillManager 已加载，共 ${it.getAllSkills().size} 个 Skills")
+            println("[智随心动] SkillManager 已加载，共 ${it.getAllSkills().size} 个 Skills")
             // 设置 VLM 客户端用于意图匹配（仅在 OpenAI 兼容模式下）
             vlmClient?.let { client -> it.setVLMClient(client) }
         }
     } catch (e: Exception) {
-        println("[肉包] SkillManager 加载失败: ${e.message}")
+        println("[智随心动] SkillManager 加载失败: ${e.message}")
         null
     }
 
@@ -1129,7 +1129,7 @@ class MobileAgent(
     }
 
     /**
-     * 返回肉包App
+     * 返回智随心动App
      */
     private fun bringAppToFront() {
         try {
@@ -1142,7 +1142,7 @@ class MobileAgent(
     }
 
     private fun log(message: String) {
-        println("[肉包] $message")
+        println("[智随心动] $message")
         _logs.value = _logs.value + message
     }
 

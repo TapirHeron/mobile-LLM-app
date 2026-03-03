@@ -108,7 +108,6 @@ data class PresetCommand(
 val presetCommands = listOf(
     PresetCommand("🍔", "点汉堡", "帮我点个附近好吃的汉堡"),
     PresetCommand("📕", "发小红书", "帮我发一条小红书，内容是今日份好心情"),
-    PresetCommand("📺", "刷B站", "打开B站搜索肉包，找到第一个视频点个赞"),
     PresetCommand("✈️", "旅游攻略", "用小美帮我查一下三亚旅游攻略"),
     PresetCommand("🎵", "听音乐", "打开网易云音乐播放每日推荐"),
     PresetCommand("🛒", "点外卖", "帮我在美团点一份猪脚饭")
@@ -363,7 +362,7 @@ fun HomeScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "肉包",
+                            text = "智随心动",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.primary
@@ -810,7 +809,7 @@ fun InputArea(
                                 Box {
                                     if (inputText.isEmpty()) {
                                         Text(
-                                            text = "告诉肉包你想做什么...",
+                                            text = "告诉智随心动你想做什么...",
                                             color = colors.textHint,
                                             fontSize = 15.sp
                                         )
