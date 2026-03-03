@@ -40,6 +40,7 @@ fun LoginScreen(
     var showRegister by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     var authResult by remember { mutableStateOf<AuthResult?>(null) }
+    var selectedUserRole by remember { mutableStateOf(UserRole.STUDENT) }
     
     Box(
         modifier = Modifier
@@ -136,11 +137,12 @@ fun LoginScreen(
                     
                     // 注册时显示角色选择和邮箱
                     if (showRegister) {
-                        EmailInputField { email ->
-                            // 邮箱输入处理
+                        var email by remember { mutableStateOf("") }
+                        EmailInputField { inputEmail ->
+                            email = inputEmail
                         }
-                        
-                        RoleSelectionField()
+
+                        RoleSelectionField(onRoleSelected = { selectedUserRole = it })
                     }
                     
                     // 错误信息显示
@@ -167,12 +169,12 @@ fun LoginScreen(
                                 authResult = null
                                 
                                 if (showRegister) {
-                                    // 注册逻辑
+                                    // 注册逻辑 - 使用用户选择的角色
                                     val registerRequest = RegisterRequest(
                                         username = username,
                                         email = null, // 简化处理
                                         password = password,
-                                        role = UserRole.STUDENT // 默认角色
+                                        role = selectedUserRole // ✅ 使用用户选择的角色
                                     )
                                     val result = userManager.register(registerRequest)
                                     authResult = result
@@ -326,8 +328,13 @@ private fun EmailInputField(onEmailChange: (String) -> Unit) {
 }
 
 @Composable
-private fun RoleSelectionField() {
+private fun RoleSelectionField(onRoleSelected: (UserRole) -> Unit) {
     var selectedRole by remember { mutableStateOf(UserRole.STUDENT) }
+    
+    // 当角色选择变化时，通知父组件
+    LaunchedEffect(selectedRole) {
+        onRoleSelected(selectedRole)
+    }
     
     Column {
         Text(
