@@ -546,8 +546,8 @@ fun SettingsScreen(
         item {
             SettingsItem(
                 icon = Icons.Default.Build,
-                title = "智随心动 Autopilot",
-                subtitle = "基于视觉语言模型的 Android 自动化工具",
+                title = "智随心动",
+                subtitle = "团队——玩的明白么",
                 onClick = { }
             )
         }

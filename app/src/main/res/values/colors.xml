@@ -2,7 +2,7 @@
 <resources>
     <!-- 图标背景 -->
     <color name="ic_launcher_background">#EFB471</color>
-    <color name="splash_background">#EFB471</color>
+    <color name="splash_background">#FFFFFF</color>
 
     <!-- 主题色 -->
     <color name="primary">#D67744</color>
