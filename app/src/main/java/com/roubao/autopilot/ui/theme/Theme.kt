@@ -8,12 +8,12 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 // 主色调
-val Primary = Color(0xFFD67744)
-val PrimaryDark = Color(0xFFB85E2E)
-val PrimaryLight = Color(0xFFE89060)
-val Secondary = Color(0xFFEFB773)
-val SecondaryDark = Color(0xFFD69B52)
-val SecondaryLight = Color(0xFFF5CB94)
+val Primary = Color(0xFF1565C0)
+val PrimaryDark = Color(0xFF0D47A1)
+val PrimaryLight = Color(0xFF42A5F5)
+val Secondary = Color(0xFF64B5F6)
+val SecondaryDark = Color(0xFF1976D2)
+val SecondaryLight = Color(0xFFBBDEFB)
 
 // 深色主题背景色
 val BackgroundDark = Color(0xFF1A1A1A)
