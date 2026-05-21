@@ -1,6 +1,6 @@
-package com.roubao.autopilot.tools
+package com.mindflow.autopilot.tools
 
-import com.roubao.autopilot.controller.AppScanner
+import com.mindflow.autopilot.controller.AppScanner
 
 /**
  * 搜索应用工具

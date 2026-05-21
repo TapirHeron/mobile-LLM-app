@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.roubao.autopilot"
+    namespace = "com.mindflow.autopilot"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.roubao.autopilot"
+        applicationId = "com.mindflow.autopilot"
         minSdk = 26
         targetSdk = 34
         versionCode = 7

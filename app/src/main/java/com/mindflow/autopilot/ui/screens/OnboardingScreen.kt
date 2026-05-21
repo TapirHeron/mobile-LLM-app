@@ -1,4 +1,4 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -24,8 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.roubao.autopilot.ui.theme.BaoziTheme
-import com.roubao.autopilot.ui.theme.Primary
+import com.mindflow.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.ui.theme.Primary
 import kotlinx.coroutines.launch
 
 data class OnboardingPage(

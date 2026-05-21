@@ -1,7 +1,7 @@
-package com.roubao.autopilot.skills
+package com.mindflow.autopilot.skills
 
 import android.content.Context
-import com.roubao.autopilot.controller.AppScanner
+import com.mindflow.autopilot.controller.AppScanner
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
@@ -118,14 +118,16 @@ class SkillRegistry private constructor(
                         examples.add(examplesArray.getString(j))
                     }
                 }
-                params.add(SkillParam(
+                params.add(
+                    SkillParam(
                     name = paramObj.getString("name"),
                     type = paramObj.optString("type", "string"),
                     description = paramObj.optString("description", ""),
                     required = paramObj.optBoolean("required", false),
                     defaultValue = paramObj.opt("default"),
                     examples = examples
-                ))
+                )
+                )
             }
         }
 
@@ -270,12 +272,14 @@ class SkillRegistry private constructor(
                 .sortedByDescending { it.priority }
 
             for (app in availableApps) {
-                results.add(AvailableAppMatch(
+                results.add(
+                    AvailableAppMatch(
                     skill = skill,
                     app = app,
                     params = params,
                     score = skillMatch.score
-                ))
+                )
+                )
             }
         }
 

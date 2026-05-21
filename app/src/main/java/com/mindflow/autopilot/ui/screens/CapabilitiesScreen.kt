@@ -1,4 +1,4 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.roubao.autopilot.tools.ToolManager
-import com.roubao.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.tools.ToolManager
+import com.mindflow.autopilot.ui.theme.BaoziTheme
 
 /**
  * 工具信息（用于展示）

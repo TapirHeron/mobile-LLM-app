@@ -1,11 +1,11 @@
-package com.roubao.autopilot.skills
+package com.mindflow.autopilot.skills
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.roubao.autopilot.controller.AppScanner
-import com.roubao.autopilot.tools.ToolManager
-import com.roubao.autopilot.vlm.VLMClient
+import com.mindflow.autopilot.controller.AppScanner
+import com.mindflow.autopilot.tools.ToolManager
+import com.mindflow.autopilot.vlm.VLMClient
 import org.json.JSONObject
 
 /**

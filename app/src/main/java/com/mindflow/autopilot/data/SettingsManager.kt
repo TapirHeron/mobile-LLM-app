@@ -1,10 +1,10 @@
-package com.roubao.autopilot.data
+package com.mindflow.autopilot.data
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.roubao.autopilot.ui.theme.ThemeMode
+import com.mindflow.autopilot.ui.theme.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

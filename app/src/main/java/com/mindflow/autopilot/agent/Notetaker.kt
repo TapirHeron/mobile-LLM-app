@@ -1,4 +1,4 @@
-package com.roubao.autopilot.agent
+package com.mindflow.autopilot.agent
 
 /**
  * Notetaker Agent - 记录重要信息

@@ -1,4 +1,4 @@
-package com.roubao.autopilot.data
+package com.mindflow.autopilot.data
 
 import kotlinx.serialization.Serializable
 /**

@@ -1,8 +1,7 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -25,15 +24,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.roubao.autopilot.data.AuthResult
-import com.roubao.autopilot.data.RegisterRequest
-import com.roubao.autopilot.data.UserRole
-import com.roubao.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.data.AuthResult
+import com.mindflow.autopilot.data.RegisterRequest
+import com.mindflow.autopilot.data.UserManager
+import com.mindflow.autopilot.data.UserRole
+import com.mindflow.autopilot.ui.theme.BaoziTheme
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    userManager: com.roubao.autopilot.data.UserManager
+    userManager: UserManager
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

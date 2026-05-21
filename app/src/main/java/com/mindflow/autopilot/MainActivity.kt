@@ -1,4 +1,4 @@
-package com.roubao.autopilot
+package com.mindflow.autopilot
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -22,26 +22,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import android.net.Uri
 import android.provider.Settings
-import com.roubao.autopilot.agent.MobileAgent
-import com.roubao.autopilot.controller.AppScanner
-import com.roubao.autopilot.controller.DeviceController
-import com.roubao.autopilot.data.*
-import com.roubao.autopilot.ui.screens.*
-import com.roubao.autopilot.ui.theme.*
+import com.mindflow.autopilot.agent.MobileAgent
+import com.mindflow.autopilot.controller.AppScanner
+import com.mindflow.autopilot.controller.DeviceController
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
-import com.roubao.autopilot.vlm.GUIOwlClient
-import com.roubao.autopilot.vlm.MAIUIClient
-import com.roubao.autopilot.vlm.VLMClient
+import com.mindflow.autopilot.vlm.GUIOwlClient
+import com.mindflow.autopilot.vlm.MAIUIClient
+import com.mindflow.autopilot.vlm.VLMClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
 import android.util.Log
-import com.roubao.autopilot.utils.AvatarManager
+import com.mindflow.autopilot.data.ExecutionRecord
+import com.mindflow.autopilot.data.ExecutionRepository
+import com.mindflow.autopilot.data.ExecutionStatus
+import com.mindflow.autopilot.data.SettingsManager
+import com.mindflow.autopilot.data.UserManager
+import com.mindflow.autopilot.ui.screens.CapabilitiesScreen
+import com.mindflow.autopilot.ui.screens.HistoryDetailScreen
+import com.mindflow.autopilot.ui.screens.HistoryScreen
+import com.mindflow.autopilot.ui.screens.HomeScreen
+import com.mindflow.autopilot.ui.screens.LoginScreen
+import com.mindflow.autopilot.ui.screens.OnboardingScreen
+import com.mindflow.autopilot.ui.screens.SettingsScreen
+import com.mindflow.autopilot.ui.screens.ShizukuHelpDialog
+import com.mindflow.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.utils.AvatarManager
 
 private const val TAG = "MainActivity"
 
@@ -320,7 +330,7 @@ class MainActivity : ComponentActivity() {
                                         // 登出后回到登录界面
                                     },
                                     onNavigateToSettings = { 
-                                        currentScreen = Screen.Settings 
+                                        currentScreen = Screen.Settings
                                     },
                                     // 语音识别回调
                                     onSpeechStart = {

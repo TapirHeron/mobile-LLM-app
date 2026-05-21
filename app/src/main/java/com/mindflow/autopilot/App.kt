@@ -1,14 +1,15 @@
-package com.roubao.autopilot
+package com.mindflow.autopilot
 
 import android.app.Application
 import android.content.pm.PackageManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.roubao.autopilot.controller.AppScanner
-import com.roubao.autopilot.controller.DeviceController
-import com.roubao.autopilot.data.SettingsManager
-import com.roubao.autopilot.skills.SkillManager
-import com.roubao.autopilot.tools.ToolManager
-import com.roubao.autopilot.utils.CrashHandler
+import com.mindflow.autopilot.BuildConfig
+import com.mindflow.autopilot.controller.AppScanner
+import com.mindflow.autopilot.controller.DeviceController
+import com.mindflow.autopilot.data.SettingsManager
+import com.mindflow.autopilot.skills.SkillManager
+import com.mindflow.autopilot.tools.ToolManager
+import com.mindflow.autopilot.utils.CrashHandler
 import rikka.shizuku.Shizuku
 
 class App : Application() {

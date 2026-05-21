@@ -1,4 +1,4 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -11,10 +11,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,8 +33,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -57,10 +51,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,7 +60,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -85,16 +75,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.roubao.autopilot.App
-import com.roubao.autopilot.agent.AgentState
-import com.roubao.autopilot.data.AppSettings
-import com.roubao.autopilot.data.UserManager
-import com.roubao.autopilot.data.UserRole
-import com.roubao.autopilot.ui.theme.BaoziTheme
-import com.roubao.autopilot.ui.theme.Primary
-import com.roubao.autopilot.ui.theme.Secondary
-import com.roubao.autopilot.utils.SpeechRecognitionState
-import com.roubao.autopilot.utils.rememberSpeechRecognizer
+import com.mindflow.autopilot.App
+import com.mindflow.autopilot.agent.AgentState
+import com.mindflow.autopilot.data.AppSettings
+import com.mindflow.autopilot.data.UserManager
+import com.mindflow.autopilot.data.UserRole
+import com.mindflow.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.ui.theme.Primary
+import com.mindflow.autopilot.ui.theme.Secondary
+import com.mindflow.autopilot.utils.SpeechRecognitionState
+import com.mindflow.autopilot.utils.rememberSpeechRecognizer
 
 /**
  * 预设命令

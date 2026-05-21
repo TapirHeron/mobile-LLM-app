@@ -1,4 +1,4 @@
-package com.roubao.autopilot;
+package com.mindflow.autopilot;
 
 interface IShellService {
     void destroy() = 16777114;

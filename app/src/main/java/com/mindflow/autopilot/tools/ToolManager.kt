@@ -1,8 +1,8 @@
-package com.roubao.autopilot.tools
+package com.mindflow.autopilot.tools
 
 import android.content.Context
-import com.roubao.autopilot.controller.AppScanner
-import com.roubao.autopilot.controller.DeviceController
+import com.mindflow.autopilot.controller.AppScanner
+import com.mindflow.autopilot.controller.DeviceController
 
 /**
  * 工具管理器

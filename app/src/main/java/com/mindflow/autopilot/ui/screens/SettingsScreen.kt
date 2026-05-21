@@ -1,6 +1,5 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,13 +38,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.roubao.autopilot.BuildConfig
-import com.roubao.autopilot.data.ApiProvider
-import com.roubao.autopilot.data.AppSettings
-import com.roubao.autopilot.ui.theme.BaoziTheme
-import com.roubao.autopilot.ui.theme.ThemeMode
-import com.roubao.autopilot.utils.CrashHandler
+import com.mindflow.autopilot.BuildConfig
+import com.mindflow.autopilot.data.ApiProvider
+import com.mindflow.autopilot.data.AppSettings
+import com.mindflow.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.ui.theme.ThemeMode
+import com.mindflow.autopilot.utils.CrashHandler
 
 @Composable
 fun SettingsScreen(

@@ -1,6 +1,6 @@
-package com.roubao.autopilot.service
+package com.mindflow.autopilot.service
 
-import com.roubao.autopilot.IShellService
+import com.mindflow.autopilot.IShellService
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.system.exitProcess

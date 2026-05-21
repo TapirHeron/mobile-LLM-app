@@ -1,4 +1,4 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,11 +45,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.roubao.autopilot.data.AppSettings
-import com.roubao.autopilot.data.UserInfo
-import com.roubao.autopilot.data.UserManager
-import com.roubao.autopilot.ui.theme.BaoziTheme
-import com.roubao.autopilot.utils.AvatarManager
+import com.mindflow.autopilot.data.AppSettings
+import com.mindflow.autopilot.data.UserInfo
+import com.mindflow.autopilot.data.UserManager
+import com.mindflow.autopilot.ui.theme.BaoziTheme
+import com.mindflow.autopilot.utils.AvatarManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

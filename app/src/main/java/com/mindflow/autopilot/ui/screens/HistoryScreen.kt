@@ -1,6 +1,5 @@
-package com.roubao.autopilot.ui.screens
+package com.mindflow.autopilot.ui.screens
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,18 +18,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.roubao.autopilot.data.ExecutionRecord
-import com.roubao.autopilot.data.ExecutionStatus
-import com.roubao.autopilot.data.ExecutionStep
-import com.roubao.autopilot.ui.theme.BaoziTheme
-import com.roubao.autopilot.ui.theme.Primary
-import com.roubao.autopilot.ui.theme.Secondary
+import com.mindflow.autopilot.data.ExecutionRecord
+import com.mindflow.autopilot.data.ExecutionStatus
+import com.mindflow.autopilot.data.ExecutionStep
+import com.mindflow.autopilot.ui.theme.BaoziTheme
 
 @Composable
 fun HistoryScreen(

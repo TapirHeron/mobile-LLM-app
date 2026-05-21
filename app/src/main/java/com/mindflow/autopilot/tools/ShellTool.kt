@@ -1,7 +1,7 @@
-package com.roubao.autopilot.tools
+package com.mindflow.autopilot.tools
 
-import com.roubao.autopilot.controller.DeviceController
-import com.roubao.autopilot.data.SettingsManager
+import com.mindflow.autopilot.controller.DeviceController
+import com.mindflow.autopilot.data.SettingsManager
 
 /**
  * Shell 命令工具

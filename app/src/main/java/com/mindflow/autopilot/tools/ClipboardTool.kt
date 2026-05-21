@@ -1,4 +1,4 @@
-package com.roubao.autopilot.tools
+package com.mindflow.autopilot.tools
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -37,7 +37,7 @@ class ClipboardTool(private val context: Context) : Tool {
             type = "string",
             description = "剪贴板标签（可选）",
             required = false,
-            defaultValue = "roubao"
+            defaultValue = "mindflow"
         )
     )
 
@@ -56,7 +56,7 @@ class ClipboardTool(private val context: Context) : Tool {
             "write" -> {
                 val text = params["text"] as? String
                     ?: return ToolResult.Error("write 操作需要 text 参数")
-                val label = params["label"] as? String ?: "roubao"
+                val label = params["label"] as? String ?: "mindflow"
                 writeClipboard(text, label)
             }
             else -> ToolResult.Error("不支持的操作: $action（只支持 read/write）")
@@ -74,10 +74,12 @@ class ClipboardTool(private val context: Context) : Tool {
                     cont.resume(ToolResult.Success(data = "", message = "剪贴板为空"))
                 } else {
                     val text = clip.getItemAt(0).coerceToText(context).toString()
-                    cont.resume(ToolResult.Success(
-                        data = text,
-                        message = "已读取剪贴板内容（${text.length} 字符）"
-                    ))
+                    cont.resume(
+                        ToolResult.Success(
+                            data = text,
+                            message = "已读取剪贴板内容（${text.length} 字符）"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 cont.resume(ToolResult.Error("读取剪贴板失败: ${e.message}"))
@@ -93,10 +95,12 @@ class ClipboardTool(private val context: Context) : Tool {
             try {
                 val clip = ClipData.newPlainText(label, text)
                 clipboardManager.setPrimaryClip(clip)
-                cont.resume(ToolResult.Success(
-                    data = text,
-                    message = "已写入剪贴板（${text.length} 字符）"
-                ))
+                cont.resume(
+                    ToolResult.Success(
+                        data = text,
+                        message = "已写入剪贴板（${text.length} 字符）"
+                    )
+                )
             } catch (e: Exception) {
                 cont.resume(ToolResult.Error("写入剪贴板失败: ${e.message}"))
             }
@@ -130,7 +134,7 @@ class ClipboardTool(private val context: Context) : Tool {
     /**
      * 同步写入（用于非协程环境）
      */
-    fun writeSync(text: String, label: String = "roubao"): Boolean {
+    fun writeSync(text: String, label: String = "mindflow"): Boolean {
         var success = false
         val latch = java.util.concurrent.CountDownLatch(1)
 

@@ -1,6 +1,4 @@
-package com.roubao.autopilot.skills
-
-import com.roubao.autopilot.tools.ToolManager
+package com.mindflow.autopilot.skills
 
 /**
  * 执行类型

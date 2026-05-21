@@ -1,4 +1,4 @@
-package com.roubao.autopilot.agent
+package com.mindflow.autopilot.agent
 
 /**
  * Manager Agent - 负责规划和进度管理

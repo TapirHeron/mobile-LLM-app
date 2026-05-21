@@ -1,4 +1,4 @@
-package com.roubao.autopilot.controller
+package com.mindflow.autopilot.controller
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,9 +10,9 @@ import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import com.roubao.autopilot.App
-import com.roubao.autopilot.IShellService
-import com.roubao.autopilot.service.ShellService
+import com.mindflow.autopilot.App
+import com.mindflow.autopilot.IShellService
+import com.mindflow.autopilot.service.ShellService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -42,7 +42,7 @@ class DeviceController(private val context: Context? = null) {
 
     private val userServiceArgs = Shizuku.UserServiceArgs(
         ComponentName(
-            "com.roubao.autopilot",
+            "com.mindflow.autopilot",
             ShellService::class.java.name
         )
     )

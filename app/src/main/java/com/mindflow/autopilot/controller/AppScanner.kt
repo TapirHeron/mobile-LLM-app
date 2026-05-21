@@ -1,8 +1,7 @@
-package com.roubao.autopilot.controller
+package com.mindflow.autopilot.controller
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -207,14 +206,16 @@ class AppScanner(private val context: Context) {
                 val category = detectCategory(appName, appInfo.packageName)
                 val keywords = generateKeywords(appName, appInfo.packageName, category)
 
-                apps.add(AppInfo(
+                apps.add(
+                    AppInfo(
                     packageName = appInfo.packageName,
                     appName = appName,
                     pinyin = pinyin,
                     category = category,
                     isSystem = isSystem,
                     keywords = keywords
-                ))
+                )
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -418,14 +419,16 @@ class AppScanner(private val context: Context) {
                     }
                 }
 
-                apps.add(AppInfo(
+                apps.add(
+                    AppInfo(
                     packageName = obj.getString("package"),
                     appName = obj.getString("name"),
                     pinyin = obj.optString("pinyin", ""),
                     category = obj.optString("category", null)?.takeIf { it.isNotEmpty() },
                     isSystem = obj.optBoolean("system", false),
                     keywords = keywords
-                ))
+                )
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()

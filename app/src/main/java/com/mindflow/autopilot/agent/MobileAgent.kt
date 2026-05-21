@@ -1,17 +1,17 @@
-package com.roubao.autopilot.agent
+package com.mindflow.autopilot.agent
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import com.roubao.autopilot.App
-import com.roubao.autopilot.controller.AppScanner
-import com.roubao.autopilot.controller.DeviceController
-import com.roubao.autopilot.data.ExecutionStep
-import com.roubao.autopilot.skills.SkillManager
-import com.roubao.autopilot.ui.OverlayService
-import com.roubao.autopilot.vlm.GUIOwlClient
-import com.roubao.autopilot.vlm.MAIUIClient
-import com.roubao.autopilot.vlm.VLMClient
+import com.mindflow.autopilot.App
+import com.mindflow.autopilot.controller.AppScanner
+import com.mindflow.autopilot.controller.DeviceController
+import com.mindflow.autopilot.data.ExecutionStep
+import com.mindflow.autopilot.skills.SkillManager
+import com.mindflow.autopilot.ui.OverlayService
+import com.mindflow.autopilot.vlm.GUIOwlClient
+import com.mindflow.autopilot.vlm.MAIUIAction
+import com.mindflow.autopilot.vlm.MAIUIClient
+import com.mindflow.autopilot.vlm.VLMClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.resume
 
 /**
  * Mobile Agent 主循环 - 移植自 MobileAgent-v3
@@ -849,7 +848,7 @@ class MobileAgent(
      * 执行 MAI-UI 解析的动作
      */
     private suspend fun executeMAIUIAction(
-        action: com.roubao.autopilot.vlm.MAIUIAction,
+        action: MAIUIAction,
         screenWidth: Int,
         screenHeight: Int
     ) = withContext(Dispatchers.IO) {
@@ -1051,7 +1050,7 @@ class MobileAgent(
      */
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private suspend fun waitForUserTakeOver(message: String) = suspendCancellableCoroutine<Unit> { continuation ->
-        com.roubao.autopilot.ui.OverlayService.showTakeOver(message) {
+        OverlayService.showTakeOver(message) {
             if (continuation.isActive) {
                 continuation.resume(Unit) {}
             }
@@ -1064,7 +1063,7 @@ class MobileAgent(
      */
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private suspend fun waitForUserConfirm(message: String) = suspendCancellableCoroutine<Boolean> { continuation ->
-        com.roubao.autopilot.ui.OverlayService.showConfirm(message) { confirmed ->
+        OverlayService.showConfirm(message) { confirmed ->
             if (continuation.isActive) {
                 continuation.resume(confirmed) {}
             }

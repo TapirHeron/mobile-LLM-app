@@ -1,4 +1,4 @@
-package com.roubao.autopilot.utils
+package com.mindflow.autopilot.utils
 
 import android.content.Context
 import android.graphics.Bitmap

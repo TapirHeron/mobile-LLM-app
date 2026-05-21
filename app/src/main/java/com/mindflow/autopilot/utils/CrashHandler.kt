@@ -1,4 +1,4 @@
-package com.roubao.autopilot.utils
+package com.mindflow.autopilot.utils
 
 import android.content.Context
 import android.content.Intent
@@ -63,7 +63,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
                 return null
             }
 
-            val exportFile = File(context.cacheDir, "roubao_logs_${System.currentTimeMillis()}.txt")
+            val exportFile = File(context.cacheDir, "mindflow_logs_${System.currentTimeMillis()}.txt")
             try {
                 FileWriter(exportFile).use { writer ->
                     // 写入设备信息

@@ -1,4 +1,4 @@
-package com.roubao.autopilot.ui.theme
+package com.mindflow.autopilot.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*

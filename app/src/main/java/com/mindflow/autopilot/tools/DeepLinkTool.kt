@@ -1,6 +1,6 @@
-package com.roubao.autopilot.tools
+package com.mindflow.autopilot.tools
 
-import com.roubao.autopilot.controller.DeviceController
+import com.mindflow.autopilot.controller.DeviceController
 
 /**
  * DeepLink 工具
@@ -57,11 +57,11 @@ class DeepLinkTool(private val deviceController: DeviceController) : Tool {
             "xiaomei_chat" to "xiaomei://chat?message={query}",  // 小美 AI 对话
 
             // ========== 出行类 ==========
-            "amap_route" to "amap://route/plan?sourceApplication=roubao&dlat={lat}&dlon={lon}&dname={destination}&dev=0&t=0",
-            "amap_navi" to "amap://navi?sourceApplication=roubao&lat={lat}&lon={lon}&dev=0",
-            "amap_search" to "amap://search?keyword={query}&sourceApplication=roubao",
+            "amap_route" to "amap://route/plan?sourceApplication=mindflow&dlat={lat}&dlon={lon}&dname={destination}&dev=0&t=0",
+            "amap_navi" to "amap://navi?sourceApplication=mindflow&lat={lat}&lon={lon}&dev=0",
+            "amap_search" to "amap://search?keyword={query}&sourceApplication=mindflow",
             "didi_call" to "diditaxi://",
-            "baidu_map_route" to "baidumap://map/direction?destination={destination}&mode=driving&src=roubao",
+            "baidu_map_route" to "baidumap://map/direction?destination={destination}&mode=driving&src=mindflow",
 
             // ========== 社交类 ==========
             "weixin_scan" to "weixin://scanqrcode",

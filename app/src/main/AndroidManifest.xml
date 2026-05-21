@@ -72,7 +72,7 @@
     </queries>
 
     <application
-        android:name=".App"
+        android:name="com.mindflow.autopilot.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -103,7 +103,7 @@
         </provider>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.mindflow.autopilot.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
@@ -116,7 +116,7 @@
 
         <!-- 悬浮窗服务 -->
         <service
-            android:name=".ui.OverlayService"
+            android:name="com.mindflow.autopilot.ui.OverlayService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
             <property

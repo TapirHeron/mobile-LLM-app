@@ -1,4 +1,4 @@
-package com.roubao.autopilot.ui
+package com.mindflow.autopilot.ui
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -20,8 +20,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.roubao.autopilot.MainActivity
-import com.roubao.autopilot.R
+import com.mindflow.autopilot.MainActivity
+import com.mindflow.autopilot.R
 
 /**
  * 七彩悬浮窗服务 - 显示当前执行步骤
