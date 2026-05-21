@@ -213,14 +213,14 @@
         "package": "com.autonavi.minimap",
         "name": "高德地图",
         "type": "delegation",
-        "deep_link": "amap://search?keyword={destination}&sourceApplication=roubao",
+        "deep_link": "amap://search?keyword={destination}&sourceApplication=mindflow",
         "priority": 100
       },
       {
         "package": "com.baidu.BaiduMap",
         "name": "百度地图",
         "type": "delegation",
-        "deep_link": "baidumap://map/direction?destination={destination}&mode=driving&src=roubao",
+        "deep_link": "baidumap://map/direction?destination={destination}&mode=driving&src=mindflow",
         "priority": 90
       },
       {
