@@ -123,7 +123,7 @@ class DeviceController(private val context: Context? = null) {
      * UID 0 = root, UID 2000 = shell (ADB)
      */
     fun getShizukuPrivilegeLevel(): ShizukuPrivilegeLevel {
-        if (!isAvailable()) {
+        if (!isShizukuAvailable()) {
             return ShizukuPrivilegeLevel.NONE
         }
         return try {
